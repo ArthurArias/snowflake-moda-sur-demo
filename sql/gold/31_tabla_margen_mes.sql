@@ -1,0 +1,4 @@
+-- Gold: tabla final que lee Power BI.
+CREATE OR REPLACE TABLE DEMO_VIDEO.GOLD.MARGEN_MES AS
+SELECT mes, ventas, coste, DEMO_VIDEO.GOLD.MARGEN(ventas, coste) AS margen
+FROM DEMO_VIDEO.STAGING.VENTAS_MES;
