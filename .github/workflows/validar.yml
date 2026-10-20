@@ -1,0 +1,23 @@
+name: validar-sql
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Estilo y errores de sintaxis (SQLFluff)
+        run: pip install sqlfluff && sqlfluff lint sql
+      - name: Cada script SQL termina en punto y coma
+        run: |
+          for f in $(find sql -name '*.sql'); do
+            tail -c 200 "$f" | grep -q ';' || { echo "Falta ; final en $f"; exit 1; }
+          done
+      - name: Sin credenciales en el codigo
+        run: "! grep -rniE 'password|passwd|secret *=|token *=' sql"
+      - name: Nombres de archivo con prefijo numerico
+        run: |
+          for f in $(find sql/silver sql/staging sql/gold -name '*.sql'); do
+            basename "$f" | grep -qE '^[0-9]{2}_' || { echo "Nombre sin prefijo: $f"; exit 1; }
+          done

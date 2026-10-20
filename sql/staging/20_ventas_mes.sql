@@ -1,0 +1,8 @@
+-- Staging: resumen intermedio por mes. Lo consume gold; nadie lo usa en informes.
+CREATE OR REPLACE TABLE DEMO_VIDEO.STAGING.VENTAS_MES AS
+SELECT
+    MESNUM AS MES,
+    SUM(VENTAS) AS VENTAS,
+    SUM(COSTE) AS COSTE
+FROM DEMO_VIDEO.COMERCIO.F_VENTAS
+GROUP BY MESNUM;
