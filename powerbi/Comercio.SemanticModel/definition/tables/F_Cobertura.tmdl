@@ -1,0 +1,43 @@
+table F_Cobertura
+	lineageTag: c3a7db8e-6d60-a524-936a-0641e83ac3e9
+
+	column MesNum
+		dataType: int64
+		isHidden
+		lineageTag: 917af57f-b2ba-595f-cc46-56ae02ed51dd
+		summarizeBy: none
+		sourceColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArticuloId
+		dataType: int64
+		isHidden
+		lineageTag: 691a6ee8-e88b-20e2-fc7c-901b6a7188da
+		summarizeBy: none
+		sourceColumn: ArticuloId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dias
+		dataType: int64
+		lineageTag: 3488e3a9-3459-049f-e409-97d7cb2af199
+		summarizeBy: sum
+		sourceColumn: Dias
+
+		annotation SummarizationSetBy = Automatic
+
+	partition F_Cobertura = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "F_COBERTURA", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"MesNum", Int64.Type}, {"ArticuloId", Int64.Type}, {"Dias", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

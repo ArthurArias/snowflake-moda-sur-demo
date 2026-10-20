@@ -1,0 +1,34 @@
+table D_MesSpark
+	lineageTag: 9adb643b-c7cd-b49a-a1cd-abd2c08019fe
+
+	column MesNum
+		dataType: int64
+		lineageTag: d9af8975-c3f1-d2c0-641c-591f6577c5aa
+		summarizeBy: none
+		sourceColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 1f7aa44e-362b-461c-3d1c-ff25e3b3fbf0
+		summarizeBy: none
+		sourceColumn: Mes
+		sortByColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_MesSpark = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_MESSPARK", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"MesNum", Int64.Type}, {"Mes", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+
