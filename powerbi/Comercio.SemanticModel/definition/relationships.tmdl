@@ -1,0 +1,36 @@
+relationship 11b26429-8a97-e0ef-25d7-014f6e6239a1
+	fromColumn: F_Ventas.MesNum
+	toColumn: D_Mes.MesNum
+
+relationship f2c23788-5d7c-6eed-9070-805e7d9a8882
+	fromColumn: F_Ventas.LineaId
+	toColumn: D_Linea.LineaId
+
+relationship ffe4afe4-95da-55e1-6d4c-bcd228046c90
+	fromColumn: F_Ventas.ArticuloId
+	toColumn: D_Articulo.ArticuloId
+
+relationship e3566d02-4039-ad67-5a06-58f54f2cee6c
+	fromColumn: F_Ventas.TerritorioId
+	toColumn: D_Territorio.TerritorioId
+
+relationship d8cec11d-82c1-c2a3-dff5-b31c83b03437
+	fromColumn: F_Stock.MesNum
+	toColumn: D_Mes.MesNum
+
+relationship 01e51554-eb7d-d365-226b-863830c4d349
+	fromColumn: F_Stock.LineaId
+	toColumn: D_Linea.LineaId
+
+relationship 7c1ba1f2-ff58-4122-c7ff-72092c538fdb
+	fromColumn: F_Stock.ArticuloId
+	toColumn: D_Articulo.ArticuloId
+
+relationship 91bfccb4-f16d-820a-2ba4-6a77d891ef03
+	fromColumn: F_Cobertura.MesNum
+	toColumn: D_Mes.MesNum
+
+relationship e0dce225-547d-b846-04fe-46cba550828a
+	fromColumn: F_Cobertura.ArticuloId
+	toColumn: D_Articulo.ArticuloId
+

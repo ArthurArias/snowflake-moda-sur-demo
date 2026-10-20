@@ -1,0 +1,157 @@
+table F_Ventas
+	lineageTag: b6c0a5bf-4f16-197d-9743-1a6f6071d8bc
+
+	column MesNum
+		dataType: int64
+		isHidden
+		lineageTag: 8bd37aae-04e2-af35-2f1b-f23540d95696
+		summarizeBy: none
+		sourceColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column LineaId
+		dataType: int64
+		isHidden
+		lineageTag: 9525ec66-0aa7-bd64-a33d-3ed5fa6ee584
+		summarizeBy: none
+		sourceColumn: LineaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArticuloId
+		dataType: int64
+		isHidden
+		lineageTag: 83dbdf4d-5937-9d6e-6513-296046d70626
+		summarizeBy: none
+		sourceColumn: ArticuloId
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritorioId
+		dataType: int64
+		isHidden
+		lineageTag: 2e06c13a-9cd8-0940-27f0-867e28edeefa
+		summarizeBy: none
+		sourceColumn: TerritorioId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ventas
+		dataType: double
+		lineageTag: ab01ba64-0800-6950-05e0-8c4445193560
+		summarizeBy: sum
+		sourceColumn: Ventas
+
+		annotation SummarizationSetBy = Automatic
+
+	column VentasAnt
+		dataType: double
+		lineageTag: fe2d3a46-a0b3-7c08-8f68-e6bac67e1aed
+		summarizeBy: sum
+		sourceColumn: VentasAnt
+
+		annotation SummarizationSetBy = Automatic
+
+	column Objetivo
+		dataType: double
+		lineageTag: c02a4e5d-c0d7-c70f-66a1-46cb9aaed1bb
+		summarizeBy: sum
+		sourceColumn: Objetivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Coste
+		dataType: double
+		lineageTag: 308b6e31-ec0e-51bf-7d2c-0dc26b330e21
+		summarizeBy: sum
+		sourceColumn: Coste
+
+		annotation SummarizationSetBy = Automatic
+
+	column CosteAnt
+		dataType: double
+		lineageTag: c98a2c9b-2741-a577-560a-43a8e5a643ef
+		summarizeBy: sum
+		sourceColumn: CosteAnt
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unidades
+		dataType: double
+		lineageTag: 493ead1e-937f-92b9-af87-91dc539c2204
+		summarizeBy: sum
+		sourceColumn: Unidades
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnidadesRecibidas
+		dataType: double
+		lineageTag: 56ecd8e2-a0c9-8df8-facf-a0b09508274a
+		summarizeBy: sum
+		sourceColumn: UnidadesRecibidas
+
+		annotation SummarizationSetBy = Automatic
+
+	column StockMedioUnidades
+		dataType: double
+		lineageTag: fcfd2270-4486-ef6f-0b87-578efeab36fa
+		summarizeBy: sum
+		sourceColumn: StockMedioUnidades
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tickets
+		dataType: double
+		lineageTag: 00130584-cc30-8994-00c6-7f6daabfa581
+		summarizeBy: sum
+		sourceColumn: Tickets
+
+		annotation SummarizationSetBy = Automatic
+
+	column TicketsAnt
+		dataType: double
+		lineageTag: 26553bd7-5fd3-643a-c868-4ccfa26155f5
+		summarizeBy: sum
+		sourceColumn: TicketsAnt
+
+		annotation SummarizationSetBy = Automatic
+
+	column Visitantes
+		dataType: double
+		lineageTag: 4fceaa0f-89b9-524b-abf0-1f40c1f0360c
+		summarizeBy: sum
+		sourceColumn: Visitantes
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisitantesAnt
+		dataType: double
+		lineageTag: bbd6cb52-0df1-df8a-b275-2f350c415533
+		summarizeBy: sum
+		sourceColumn: VisitantesAnt
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisitasWeb
+		dataType: double
+		lineageTag: f95302c9-e66c-d62a-cb25-10d3fae30a83
+		summarizeBy: sum
+		sourceColumn: VisitasWeb
+
+		annotation SummarizationSetBy = Automatic
+
+	partition F_Ventas = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "F_VENTAS", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"MesNum", Int64.Type}, {"LineaId", Int64.Type}, {"ArticuloId", Int64.Type}, {"TerritorioId", Int64.Type}, {"Ventas", type number}, {"VentasAnt", type number}, {"Objetivo", type number}, {"Coste", type number}, {"CosteAnt", type number}, {"Unidades", type number}, {"UnidadesRecibidas", type number}, {"StockMedioUnidades", type number}, {"Tickets", type number}, {"TicketsAnt", type number}, {"Visitantes", type number}, {"VisitantesAnt", type number}, {"VisitasWeb", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

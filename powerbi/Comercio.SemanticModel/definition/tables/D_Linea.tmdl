@@ -1,0 +1,34 @@
+table D_Linea
+	lineageTag: c4cceb27-f446-b63b-586d-3e2ae31d728a
+
+	column LineaId
+		dataType: int64
+		lineageTag: 530f1006-e37f-d3d5-91dd-a306a9c35aa1
+		summarizeBy: none
+		sourceColumn: LineaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Linea
+		dataType: string
+		lineageTag: c13e02ea-beb5-c32d-1a70-076a45a2286f
+		summarizeBy: none
+		sourceColumn: Linea
+		sortByColumn: LineaId
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_Linea = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_LINEA", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"LineaId", Int64.Type}, {"Linea", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,764 @@
+table M_Medidas
+	lineageTag: e8d6a323-e1da-5a4e-5086-94d19a8b52f1
+
+	measure Ventas = SUM ( F_Ventas[Ventas] )
+		formatString: #,0
+		displayFolder: Ventas
+		lineageTag: 6a8c6b88-f727-95d5-ccab-e789acc91e10
+
+	measure 'Ventas Ant' = SUM ( F_Ventas[VentasAnt] )
+		formatString: #,0
+		displayFolder: Ventas
+		lineageTag: 60cdc3f5-abb2-8133-6dcd-3d4a7c0020d1
+
+	measure 'Var Ventas %' = DIVIDE ( [Ventas], [Ventas Ant] ) - 1
+		formatString: +0.0%;-0.0%
+		displayFolder: Ventas
+		lineageTag: 56ee450b-15e1-b448-20a0-6d6d1c4bb1c6
+
+	measure 'Ventas M€' = [Ventas]
+		formatString: 0,.00"M€"
+		displayFolder: Ventas
+		lineageTag: ba56799a-0420-4089-9541-1e85954a30fb
+
+	measure Objetivo = SUM ( F_Ventas[Objetivo] )
+		formatString: #,0
+		displayFolder: Ventas
+		lineageTag: e5e71cad-3a39-a032-ee62-d94cf7f1a815
+
+	measure Cumplimiento = DIVIDE ( [Ventas], [Objetivo] )
+		formatString: 0.0%
+		displayFolder: Ventas
+		lineageTag: a62ebd7c-2ce8-4fdf-3594-4942af58ff96
+
+	measure Crecimiento = [Ventas] - [Ventas Ant]
+		formatString: +#,0;-#,0
+		displayFolder: Ventas
+		lineageTag: 0293aa41-3da5-a99a-fc54-34b0a1408596
+
+	measure 'Margen k€' = [Ventas] - SUM ( F_Ventas[Coste] )
+		formatString: #,0
+		displayFolder: Ventas
+		lineageTag: d714f8fc-cb5c-afb6-26dd-d8da32175d9f
+
+	measure 'Ticket medio' = DIVIDE ( [Ventas] * 1000, SUM ( F_Ventas[Tickets] ) )
+		formatString: #,0.0 "€"
+		displayFolder: Ventas
+		lineageTag: 41e378f7-13f4-966f-5daa-1e0fa081096c
+
+	measure 'Ticket medio Ant' = DIVIDE ( [Ventas Ant] * 1000, SUM ( F_Ventas[TicketsAnt] ) )
+		formatString: #,0.0 "€"
+		displayFolder: Ventas
+		lineageTag: fd80e227-8a9e-f353-e392-28be43e81fff
+
+	measure 'Var Ticket %' = DIVIDE ( [Ticket medio], [Ticket medio Ant] ) - 1
+		formatString: +0.0%;-0.0%
+		displayFolder: Ventas
+		lineageTag: 996a9f9d-e5ca-9877-e13c-b5ea14ace4b7
+
+	measure 'Margen %' = DIVIDE ( [Ventas] - SUM ( F_Ventas[Coste] ), [Ventas] )
+		formatString: 0.0%
+		displayFolder: Ventas
+		lineageTag: 8aa13497-eb11-1d2d-c7c0-97aa08ebcf39
+
+	measure 'Margen % Ant' = DIVIDE ( [Ventas Ant] - SUM ( F_Ventas[CosteAnt] ), [Ventas Ant] )
+		formatString: 0.0%
+		displayFolder: Ventas
+		lineageTag: 1cdb25a5-63a8-de92-d635-c81418df2b20
+
+	measure 'Conversión tienda' = DIVIDE ( CALCULATE ( SUM ( F_Ventas[Tickets] ), KEEPFILTERS ( D_Linea[Linea] = "Tienda física" ) ), SUM ( F_Ventas[Visitantes] ) )
+		formatString: 0.0%
+		displayFolder: Ventas
+		lineageTag: 8445d092-6fc3-a107-7983-a16b230451c2
+
+	measure 'Conversión tienda Ant' = DIVIDE ( CALCULATE ( SUM ( F_Ventas[TicketsAnt] ), KEEPFILTERS ( D_Linea[Linea] = "Tienda física" ) ), SUM ( F_Ventas[VisitantesAnt] ) )
+		formatString: 0.0%
+		displayFolder: Ventas
+		lineageTag: b6830c30-7ed5-5728-ef46-10719a3040b0
+
+	measure Unidades = SUM ( F_Ventas[Unidades] )
+		formatString: #,0
+		displayFolder: Producto
+		lineageTag: 68b7d736-adf8-173c-26f9-cfbcd2778820
+
+	measure Sell-through = DIVIDE ( SUM ( F_Ventas[Unidades] ), SUM ( F_Ventas[UnidadesRecibidas] ) )
+		formatString: 0%
+		displayFolder: Producto
+		lineageTag: cc7a2fcd-4639-54ee-b01a-470b1c6b8640
+
+	measure Rotación = DIVIDE ( SUM ( F_Ventas[Unidades] ) * 12, SUM ( F_Ventas[StockMedioUnidades] ) )
+		formatString: 0.0
+		displayFolder: Producto
+		lineageTag: 232350ce-2415-f1ab-83ff-9be4c8747eec
+
+	measure 'Var vs ej. anterior' = [Var Ventas %]
+		formatString: "▲ +"0.0%;"▼ −"0.0%
+		displayFolder: Producto
+		lineageTag: e8e949e8-31ad-5384-9c0a-691d2950d73b
+
+	measure 'Visitas web' = SUM ( F_Ventas[VisitasWeb] )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: c8f27554-d936-b216-9614-8a23e7a7303f
+
+	measure Fichas = [Visitas web] * 0.578
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: e2e9f699-8869-32a9-3390-d5541eefbce3
+
+	measure Carritos = [Fichas] * 0.173
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: 5980c1b6-37ea-70f7-c777-91b65e99377e
+
+	measure 'Compras online' = CALCULATE ( SUM ( F_Ventas[Tickets] ), KEEPFILTERS ( D_Linea[Linea] = "Online" ) )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: 2480f184-70de-7699-1004-fa20005e6775
+
+	measure 'Ventas online' = CALCULATE ( [Ventas], KEEPFILTERS ( D_Linea[Linea] = "Online" ) )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: f0fd2e59-6cdd-0205-2f2d-0b1ba7c3ee28
+
+	measure 'Ventas online mapa' = CALCULATE ( [Ventas], D_Linea[Linea] = "Online" )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: 48884f4d-9d11-b172-7912-acb7dde70b33
+
+	measure 'Cuota online' = DIVIDE ( CALCULATE ( [Ventas], D_Linea[Linea] = "Online" ), CALCULATE ( [Ventas], REMOVEFILTERS ( D_Linea ) ) )
+		formatString: 0.0%
+		displayFolder: Online
+		lineageTag: 54289be9-f977-d1f8-28da-a3453ee98abe
+
+	measure 'Valor embudo' = SWITCH ( SELECTEDVALUE ( D_Embudo[Orden] ), 1, [Visitas web], 2, [Fichas], 3, [Carritos], 4, [Compras online] )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: a4036548-2cd7-b480-0682-5b82c371144b
+
+	measure 'Valor puente' =
+			VAR p = SELECTEDVALUE ( D_Puente[Orden] )
+			VAR l = SELECTEDVALUE ( D_Puente[Linea] )
+			RETURN IF ( p = 1, [Ventas Ant], CALCULATE ( [Crecimiento], KEEPFILTERS ( D_Linea[Linea] = l ) ) )
+		formatString: #,0
+		displayFolder: Online
+		lineageTag: 3c915d50-6fe8-8d68-a648-28beec182776
+
+	measure 'Mes de la foto de stock' = MAX ( D_Mes[MesNum] )
+		formatString: 0
+		displayFolder: Stock
+		lineageTag: 6d5c70d5-77fe-d960-f460-814ac897063a
+
+	measure Posiciones =
+			VAR m = [Mes de la foto de stock]
+			RETURN CALCULATE ( SUM ( F_Stock[Posiciones] ), D_Mes[MesNum] = m )
+		formatString: #,0.0
+		displayFolder: Stock
+		lineageTag: 68a50c3b-f9a4-e295-956a-a9d77e4896d2
+
+	measure 'Posiciones bajas' =
+			VAR m = [Mes de la foto de stock]
+			RETURN CALCULATE ( SUM ( F_Stock[PosicionesBajas] ), D_Mes[MesNum] = m )
+		formatString: #,0.0
+		displayFolder: Stock
+		lineageTag: 4a6095dc-89a0-966c-7dc6-fa8255abf90a
+
+	measure 'Posiciones agotadas' =
+			VAR m = [Mes de la foto de stock]
+			RETURN CALCULATE ( SUM ( F_Stock[PosicionesAgotadas] ), D_Mes[MesNum] = m )
+		formatString: #,0.0
+		displayFolder: Stock
+		lineageTag: 9cdec4f0-d89e-95b9-4ad4-8edbfae63026
+
+	measure 'Posiciones en stock' = [Posiciones] - [Posiciones bajas] - [Posiciones agotadas]
+		formatString: #,0.0
+		displayFolder: Stock
+		lineageTag: 59e7dbcb-ff7a-c33b-9b01-2bd099f64286
+
+	measure 'Coste art-mes' = CALCULATE ( SUM ( F_Ventas[Coste] ), REMOVEFILTERS ( D_Linea ), REMOVEFILTERS ( D_Territorio ) )
+		formatString: #,0
+		displayFolder: Stock
+		lineageTag: a5f08da5-232c-509d-5b3d-07815defbd4d
+
+	measure 'Cobertura días' =
+			VAR m = [Mes de la foto de stock]
+			RETURN
+			IF ( m < 1, BLANK (),
+			    DIVIDE (
+			        SUMX ( VALUES ( D_Articulo[ArticuloId] ),
+			            CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ) * CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) ),
+			        SUMX ( VALUES ( D_Articulo[ArticuloId] ), CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) ) ) )
+		formatString: 0
+		displayFolder: Stock
+		lineageTag: 0b84edb2-53ed-1646-f716-18825082c267
+
+	measure 'Cobertura días mes ant' =
+			VAR m = [Mes de la foto de stock] - 1
+			RETURN
+			IF ( m < 1, BLANK (),
+			    DIVIDE (
+			        SUMX ( VALUES ( D_Articulo[ArticuloId] ),
+			            CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ) * CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) ),
+			        SUMX ( VALUES ( D_Articulo[ArticuloId] ), CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) ) ) )
+		formatString: 0
+		displayFolder: Stock
+		lineageTag: 8c9ffac1-1c1e-a94b-677b-a5703da04d98
+
+	measure 'Stock lento %' =
+			VAR m = [Mes de la foto de stock]
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[ArticuloId] ),
+			    "@d", CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ),
+			    "@c", CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) )
+			RETURN IF ( m < 1, BLANK (), DIVIDE ( SUMX ( FILTER ( t, [@d] >= 90 ), [@d] * [@c] ), SUMX ( t, [@d] * [@c] ) ) )
+		formatString: 0.0%
+		displayFolder: Stock
+		lineageTag: 8c13e008-b17f-151d-6278-5070d71358ad
+
+	measure 'Stock lento % mes ant' =
+			VAR m = [Mes de la foto de stock] - 1
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[ArticuloId] ),
+			    "@d", CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ),
+			    "@c", CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) )
+			RETURN IF ( m < 1, BLANK (), DIVIDE ( SUMX ( FILTER ( t, [@d] >= 90 ), [@d] * [@c] ), SUMX ( t, [@d] * [@c] ) ) )
+		formatString: 0.0%
+		displayFolder: Stock
+		lineageTag: abc2464a-0888-bf3b-e720-1b45947a534b
+
+	measure 'Rotura %' =
+			VAR m = [Mes de la foto de stock]
+			RETURN IF ( m < 1, BLANK (), DIVIDE ( CALCULATE ( SUM ( F_Stock[PosicionesAgotadas] ), D_Mes[MesNum] = m ), CALCULATE ( SUM ( F_Stock[Posiciones] ), D_Mes[MesNum] = m ) ) )
+		formatString: 0.0%
+		displayFolder: Stock
+		lineageTag: ec95f3da-0f6b-e68f-454a-80dcc7cd166a
+
+	measure 'Rotura % mes ant' =
+			VAR m = [Mes de la foto de stock] - 1
+			RETURN IF ( m < 1, BLANK (), DIVIDE ( CALCULATE ( SUM ( F_Stock[PosicionesAgotadas] ), D_Mes[MesNum] = m ), CALCULATE ( SUM ( F_Stock[Posiciones] ), D_Mes[MesNum] = m ) ) )
+		formatString: 0.0%
+		displayFolder: Stock
+		lineageTag: 41f8f474-6f4a-0319-48b3-298260f631a6
+
+	measure 'Cobertura celda' =
+			VAR d = [Cobertura art-mes]
+			RETURN IF ( ISBLANK ( d ), BLANK (), IF ( d <= 30, "▼ ", "" ) & FORMAT ( d, "0" ) )
+		displayFolder: Stock
+		lineageTag: fe16e0ec-ab5f-a8af-7f52-e1dcbe8fe955
+
+	measure 'Cobertura color fondo' =
+			VAR d = [Cobertura art-mes]
+			RETURN IF ( ISBLANK ( d ), BLANK (), IF ( d <= 30, "#121219", IF ( d < 60, "#26262F", IF ( d < 90, "#3F3F4B", "#FF9F43" ) ) ) )
+		displayFolder: Stock
+		lineageTag: 13dfaa33-19c6-45e4-18d8-ec32c0be626a
+
+	measure 'Cobertura color texto' =
+			VAR d = [Cobertura art-mes]
+			RETURN IF ( ISBLANK ( d ), BLANK (), IF ( d <= 30, "#FF8A3D", IF ( d >= 90, "#07070A", "#F2F0EA" ) ) )
+		displayFolder: Stock
+		lineageTag: 64b2633a-a328-c479-db02-f633e7ad2ccb
+
+	measure 'Cobertura art-mes' = CALCULATE ( MAX ( F_Cobertura[Dias] ) )
+		formatString: 0
+		displayFolder: Stock
+		lineageTag: 4594cdc8-da25-0610-0c68-05200892053a
+
+	measure 'Ventas Δ texto' =
+			VAR v = [Var Ventas %]
+			RETURN IF ( ISBLANK ( v ), "—", IF ( v >= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( v * 100, "+0.0;-0.0" ), "-", "−" ) & " % vs ejercicio anterior" )
+		displayFolder: Textos
+		lineageTag: a326b440-6bbd-c101-29a0-444552745432
+
+	measure 'Ticket Δ texto' =
+			VAR v = [Var Ticket %]
+			RETURN IF ( ISBLANK ( v ), "—", IF ( v >= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( v * 100, "+0.0;-0.0" ), "-", "−" ) & " %" )
+		displayFolder: Textos
+		lineageTag: 0b065f2a-50b2-76fa-55b5-8816205174ad
+
+	measure 'Margen Δ texto' =
+			VAR d = ( [Margen %] - [Margen % Ant] ) * 100
+			RETURN IF ( ISBLANK ( [Margen %] ) || ISBLANK ( [Margen % Ant] ), "—", IF ( ABS ( d ) < 0.05, "= sin cambio", IF ( d >= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( d, "+0.0;-0.0" ), "-", "−" ) & " pt" ) )
+		displayFolder: Textos
+		lineageTag: 9d486081-331c-627c-0f2b-7df7d430ef5a
+
+	measure 'Conversión Δ texto' =
+			VAR d = ( [Conversión tienda] - [Conversión tienda Ant] ) * 100
+			RETURN IF ( ISBLANK ( [Conversión tienda] ) || ISBLANK ( [Conversión tienda Ant] ), "—", IF ( ABS ( d ) < 0.05, "= sin cambio", IF ( d >= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( d, "+0.0;-0.0" ), "-", "−" ) & " pt" ) )
+		displayFolder: Textos
+		lineageTag: 65ca3195-cd6a-5782-caa1-7065bf92249f
+
+	measure 'Cobertura Δ texto' =
+			VAR d = ROUND ( [Cobertura días] - [Cobertura días mes ant], 0 )
+			RETURN IF ( ISBLANK ( [Cobertura días] ) || ISBLANK ( [Cobertura días mes ant] ), "—", IF ( d <= 0, "▲ ", "▼ " ) & ABS ( d ) & " días " & IF ( d <= 0, "menos", "más" ) & " que el mes anterior" )
+		displayFolder: Textos
+		lineageTag: db519500-e9df-baed-ea97-255036a2329c
+
+	measure 'Rotura Δ texto' =
+			VAR d = ( [Rotura %] - [Rotura % mes ant] ) * 100
+			RETURN IF ( ISBLANK ( [Rotura %] ) || ISBLANK ( [Rotura % mes ant] ), "—", IF ( ABS ( d ) < 0.05, "= sin cambio", IF ( d <= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( d, "+0.0;-0.0" ), "-", "−" ) & " pt" ) )
+		displayFolder: Textos
+		lineageTag: 31d6d6be-d620-d52f-9eb2-7ab465029719
+
+	measure 'Stock lento Δ texto' =
+			VAR d = ( [Stock lento %] - [Stock lento % mes ant] ) * 100
+			RETURN IF ( ISBLANK ( [Stock lento %] ) || ISBLANK ( [Stock lento % mes ant] ), "—", IF ( ABS ( d ) < 0.05, "= sin cambio", IF ( d <= 0, "▲ ", "▼ " ) & SUBSTITUTE ( FORMAT ( d, "+0.0;-0.0" ), "-", "−" ) & " pt" ) )
+		displayFolder: Textos
+		lineageTag: 3f12bd56-f462-1e35-76b0-79af6056bc44
+
+	measure 'Ventas Δ color' =
+			VAR t = [Ventas Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: e77e32ed-721f-d7e6-8601-945e646395bc
+
+	measure 'Ticket Δ color' =
+			VAR t = [Ticket Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: cce9677b-d6b2-60e0-a9fe-1eb12c8756ad
+
+	measure 'Margen Δ color' =
+			VAR t = [Margen Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: 8e698d5e-e787-3dcb-7fe0-56f1ffe8014f
+
+	measure 'Conversión Δ color' =
+			VAR t = [Conversión Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: 002c9d2c-0129-6827-b245-7eea7546c6c8
+
+	measure 'Cobertura Δ color' =
+			VAR t = [Cobertura Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: e52fcd71-4479-11d9-c547-b3f2de8ebcb6
+
+	measure 'Rotura Δ color' =
+			VAR t = [Rotura Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: d47a7c31-93af-7eb8-07ea-335e0ec105ea
+
+	measure 'Stock lento Δ color' =
+			VAR t = [Stock lento Δ texto]
+			RETURN IF ( LEFT ( t, 1 ) = "▲", "#7FD8A0", IF ( LEFT ( t, 1 ) = "▼", "#FF8A3D", "#9A9AA6" ) )
+		displayFolder: Textos
+		lineageTag: 7b71b130-0c2f-0aba-22c0-79a3c093a046
+
+	measure 'Color tile treemap' =
+			VAR r = RANKX ( ALLSELECTED ( D_Articulo[Articulo] ), [Ventas], , DESC, Dense )
+			RETURN IF ( r = 1, "#FF9F43", IF ( r <= 4, "#5E5E6A", "#34343F" ) )
+		displayFolder: Producto
+		lineageTag: c49c66c7-b66b-b0f7-c513-b98d1cc77a27
+
+	measure 'Color mapa ventas' =
+			VAR r = RANKX ( ALL ( D_Territorio[Comunidad] ), [Ventas], , DESC, Dense )
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( r = 1, "#FF9F43", IF ( r <= 5, "#C9C9D1", IF ( r <= 12, "#8D8D99", "#5E5E6A" ) ) ) )
+		displayFolder: Mapas
+		lineageTag: 4f524969-c33d-8fb1-c9f5-65e6c1109ed6
+
+	measure 'Color mapa margen' =
+			VAR m = [Margen %]
+			VAR med = CALCULATE ( [Margen %], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( m ), BLANK (), IF ( m < med - 0.006, "#FF8A3D", IF ( m >= med + 0.004, "#C9C9D1", "#8D8D99" ) ) )
+		displayFolder: Mapas
+		lineageTag: 42d95b69-82ea-a15e-1807-c184ee32342a
+
+	measure 'Color mapa online' =
+			VAR c = [Cuota online]
+			VAR med = CALCULATE ( [Cuota online], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( c ), BLANK (), IF ( c > med + 0.01, "#FF9F43", "#8D8D99" ) )
+		displayFolder: Mapas
+		lineageTag: 4d7d45ba-d237-c037-ca3b-a3fad8800a1f
+
+	measure 'Nivel mapa ventas' =
+			VAR mx = MAXX ( ALL ( D_Territorio[Comunidad] ), [Ventas] )
+			VAR esDest = RANKX ( ALL ( D_Territorio[Comunidad] ), [Ventas], , DESC, Dense ) = 1
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( esDest, 100, 45 * DIVIDE ( [Ventas], mx ) ) )
+		displayFolder: Mapas
+		lineageTag: 10dced8f-35e6-77fa-4263-8f2483d2632d
+
+	measure 'Nivel mapa margen' =
+			VAR mx = MAXX ( ALL ( D_Territorio[Comunidad] ), [Ventas] )
+			VAR esDest = [Margen %] < CALCULATE ( [Margen %], REMOVEFILTERS ( D_Territorio ) ) - 0.006
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( esDest, 100, 45 * DIVIDE ( [Ventas], mx ) ) )
+		displayFolder: Mapas
+		lineageTag: 500d1768-c701-3322-e857-5c10cf3bcdfb
+
+	measure 'Nivel mapa online' =
+			VAR mx = MAXX ( ALL ( D_Territorio[Comunidad] ), [Ventas online mapa] )
+			VAR esDest = [Cuota online] > CALCULATE ( [Cuota online], REMOVEFILTERS ( D_Territorio ) ) + 0.01
+			RETURN IF ( ISBLANK ( [Ventas online mapa] ), BLANK (), IF ( esDest, 100, 45 * DIVIDE ( [Ventas online mapa], mx ) ) )
+		displayFolder: Mapas
+		lineageTag: 3e46c8f6-55c0-934b-dcef-18507c9bdfc7
+
+	measure 'Mapa ventas dest' =
+			VAR r = RANKX ( ALL ( D_Territorio[Comunidad] ), [Ventas], , DESC, Dense )
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( r = 1, [Ventas], BLANK () ) )
+		displayFolder: Mapas
+		lineageTag: 8c6bdcd8-78c7-8100-190d-79c8c34ce290
+
+	measure 'Mapa ventas resto' =
+			VAR r = RANKX ( ALL ( D_Territorio[Comunidad] ), [Ventas], , DESC, Dense )
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( r = 1, BLANK (), [Ventas] ) )
+		displayFolder: Mapas
+		lineageTag: 15b36a80-aa4d-29b6-9151-eaff5d78a841
+
+	measure 'Mapa margen dest' =
+			VAR med = CALCULATE ( [Margen %], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( [Margen %] < med - 0.006, [Ventas], BLANK () ) )
+		displayFolder: Mapas
+		lineageTag: c09874fd-9e33-5933-5775-6ca420e01f86
+
+	measure 'Mapa margen resto' =
+			VAR med = CALCULATE ( [Margen %], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( [Ventas] ), BLANK (), IF ( [Margen %] < med - 0.006, BLANK (), [Ventas] ) )
+		displayFolder: Mapas
+		lineageTag: 15ec214b-f18a-55bf-1a49-06698924fbb7
+
+	measure 'Mapa online dest' =
+			VAR med = CALCULATE ( [Cuota online], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( [Ventas online mapa] ), BLANK (), IF ( [Cuota online] > med + 0.01, [Ventas online mapa], BLANK () ) )
+		displayFolder: Mapas
+		lineageTag: 32a1c577-ef43-6322-2df8-2a10b520754b
+
+	measure 'Mapa online resto' =
+			VAR med = CALCULATE ( [Cuota online], REMOVEFILTERS ( D_Territorio ) )
+			RETURN IF ( ISBLANK ( [Ventas online mapa] ), BLANK (), IF ( [Cuota online] > med + 0.01, BLANK (), [Ventas online mapa] ) )
+		displayFolder: Mapas
+		lineageTag: 06b24c96-d8f4-e26f-353b-fbcc8edbb1d7
+
+	measure 'Spark ventas' = CALCULATE ( [Ventas], REMOVEFILTERS ( D_Mes ), TREATAS ( VALUES ( D_MesSpark[MesNum] ), D_Mes[MesNum] ) )
+		formatString: #,0
+		displayFolder: Minigráficos
+		lineageTag: da43bdb1-c123-6fcc-5207-da3a17031362
+
+	measure 'Spark ventas dest' = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark ventas] )
+		displayFolder: Minigráficos
+		lineageTag: 549581f2-3d09-7b22-e401-45d04253d045
+
+	measure 'Spark ventas resto' = IF ( NOT IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark ventas] )
+		displayFolder: Minigráficos
+		lineageTag: e1488e3d-358a-817c-55e1-83c22015f039
+
+	measure 'Spark ticket dest' = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark ticket] )
+		displayFolder: Minigráficos
+		lineageTag: 7f8988c2-fe8b-f6ef-8b06-d2537645a9ea
+
+	measure 'Spark ticket resto' = IF ( NOT IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark ticket] )
+		displayFolder: Minigráficos
+		lineageTag: d5a8fd33-b71a-fa8a-5af2-b15096f5a2b6
+
+	measure 'Spark margen dest' = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark margen] )
+		displayFolder: Minigráficos
+		lineageTag: 154cbca0-e462-6dda-0231-5000b4640919
+
+	measure 'Spark margen resto' = IF ( NOT IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark margen] )
+		displayFolder: Minigráficos
+		lineageTag: df1c37cc-7b18-e500-f6e5-fdaff07e0921
+
+	measure 'Spark conversión dest' = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark conversión] )
+		displayFolder: Minigráficos
+		lineageTag: e3d5c29a-2a44-08d2-7705-469533a4a060
+
+	measure 'Spark conversión resto' = IF ( NOT IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, MAX ( D_MesSpark[MesNum] ) IN VALUES ( D_Mes[MesNum] ), MAX ( D_MesSpark[MesNum] ) = 12 ), [Spark conversión] )
+		displayFolder: Minigráficos
+		lineageTag: b0b31b69-a9bc-53a6-af51-e9c7cb072ab1
+
+	measure 'Spark svg ventas' =
+			VAR mx = MAXX ( ALL ( D_MesSpark[MesNum] ), [Spark ventas] )
+			VAR barras = CONCATENATEX ( ALL ( D_MesSpark[MesNum] ),
+			    VAR v = [Spark ventas]
+			    VAR bh = FORMAT ( DIVIDE ( v, mx ) * 44, "0.0", "en-US" )
+			    VAR bt = DIVIDE ( v, mx ) * 44
+			    VAR x = FORMAT ( ( D_MesSpark[MesNum] - 1 ) * 8 + 1.5, "0.0", "en-US" )
+			    VAR y = FORMAT ( 44 - bt, "0.0", "en-US" )
+			    VAR col = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, D_MesSpark[MesNum] IN VALUES ( D_Mes[MesNum] ), D_MesSpark[MesNum] = 12 ), "%23FF9F43", "%235E5E6A" )
+			    RETURN IF ( ISBLANK ( v ), "", "<rect x='" & x & "' y='" & y & "' width='5' height='" & bh & "' rx='2' fill='" & col & "'/>" ),
+			    "", D_MesSpark[MesNum] )
+			RETURN "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 44'>" & barras & "</svg>"
+		displayFolder: Minigráficos
+		lineageTag: 3ca31777-5839-7b4c-0d53-65991d76dfba
+		dataCategory: ImageUrl
+
+	measure 'Spark svg ticket' =
+			VAR mx = MAXX ( ALL ( D_MesSpark[MesNum] ), [Spark ticket] )
+			VAR barras = CONCATENATEX ( ALL ( D_MesSpark[MesNum] ),
+			    VAR v = [Spark ticket]
+			    VAR bh = FORMAT ( DIVIDE ( v, mx ) * 44, "0.0", "en-US" )
+			    VAR bt = DIVIDE ( v, mx ) * 44
+			    VAR x = FORMAT ( ( D_MesSpark[MesNum] - 1 ) * 8 + 1.5, "0.0", "en-US" )
+			    VAR y = FORMAT ( 44 - bt, "0.0", "en-US" )
+			    VAR col = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, D_MesSpark[MesNum] IN VALUES ( D_Mes[MesNum] ), D_MesSpark[MesNum] = 12 ), "%23FF9F43", "%235E5E6A" )
+			    RETURN IF ( ISBLANK ( v ), "", "<rect x='" & x & "' y='" & y & "' width='5' height='" & bh & "' rx='2' fill='" & col & "'/>" ),
+			    "", D_MesSpark[MesNum] )
+			RETURN "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 44'>" & barras & "</svg>"
+		displayFolder: Minigráficos
+		lineageTag: cf94daf7-0e22-9fd3-ebe0-49f96c11c5c5
+		dataCategory: ImageUrl
+
+	measure 'Spark svg margen' =
+			VAR mx = MAXX ( ALL ( D_MesSpark[MesNum] ), [Spark margen] )
+			VAR barras = CONCATENATEX ( ALL ( D_MesSpark[MesNum] ),
+			    VAR v = [Spark margen]
+			    VAR bh = FORMAT ( DIVIDE ( v, mx ) * 44, "0.0", "en-US" )
+			    VAR bt = DIVIDE ( v, mx ) * 44
+			    VAR x = FORMAT ( ( D_MesSpark[MesNum] - 1 ) * 8 + 1.5, "0.0", "en-US" )
+			    VAR y = FORMAT ( 44 - bt, "0.0", "en-US" )
+			    VAR col = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, D_MesSpark[MesNum] IN VALUES ( D_Mes[MesNum] ), D_MesSpark[MesNum] = 12 ), "%23FF9F43", "%235E5E6A" )
+			    RETURN IF ( ISBLANK ( v ), "", "<rect x='" & x & "' y='" & y & "' width='5' height='" & bh & "' rx='2' fill='" & col & "'/>" ),
+			    "", D_MesSpark[MesNum] )
+			RETURN "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 44'>" & barras & "</svg>"
+		displayFolder: Minigráficos
+		lineageTag: b9d1cb9a-a691-73bb-adb0-859ce035f636
+		dataCategory: ImageUrl
+
+	measure 'Spark svg conversión' =
+			VAR mx = MAXX ( ALL ( D_MesSpark[MesNum] ), [Spark conversión] )
+			VAR barras = CONCATENATEX ( ALL ( D_MesSpark[MesNum] ),
+			    VAR v = [Spark conversión]
+			    VAR bh = FORMAT ( DIVIDE ( v, mx ) * 44, "0.0", "en-US" )
+			    VAR bt = DIVIDE ( v, mx ) * 44
+			    VAR x = FORMAT ( ( D_MesSpark[MesNum] - 1 ) * 8 + 1.5, "0.0", "en-US" )
+			    VAR y = FORMAT ( 44 - bt, "0.0", "en-US" )
+			    VAR col = IF ( IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, D_MesSpark[MesNum] IN VALUES ( D_Mes[MesNum] ), D_MesSpark[MesNum] = 12 ), "%23FF9F43", "%235E5E6A" )
+			    RETURN IF ( ISBLANK ( v ), "", "<rect x='" & x & "' y='" & y & "' width='5' height='" & bh & "' rx='2' fill='" & col & "'/>" ),
+			    "", D_MesSpark[MesNum] )
+			RETURN "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 44'>" & barras & "</svg>"
+		displayFolder: Minigráficos
+		lineageTag: b9a9cfe4-5e83-f475-14e7-fb63565c401d
+		dataCategory: ImageUrl
+
+	measure 'Color spark' =
+			VAR n = MAX ( D_MesSpark[MesNum] )
+			RETURN IF ( COUNTROWS ( VALUES ( D_Mes[MesNum] ) ) < 12, IF ( n IN VALUES ( D_Mes[MesNum] ), "#FF9F43", "#5E5E6A" ), IF ( n = 12, "#FF9F43", "#5E5E6A" ) )
+		displayFolder: Minigráficos
+		lineageTag: 1b1c702c-4444-fe47-b964-6b7e4068cc6f
+
+	measure 'Spark ticket' =
+			VAR v = CALCULATE ( [Ticket medio], REMOVEFILTERS ( D_Mes ), TREATAS ( VALUES ( D_MesSpark[MesNum] ), D_Mes[MesNum] ) )
+			VAR t = ADDCOLUMNS ( ALL ( D_MesSpark[MesNum] ), "@v", CALCULATE ( [Ticket medio], REMOVEFILTERS ( D_Mes ), TREATAS ( { [MesNum] }, D_Mes[MesNum] ) ) )
+			VAR mx = MAXX ( t, [@v] )
+			VAR mn = MINX ( t, [@v] )
+			VAR lo = mn - ( mx - mn ) * 0.6
+			RETURN IF ( ISBLANK ( v ), BLANK (), MAX ( v - lo, ( mx - lo ) * 0.07 ) )
+		formatString: #,0.0
+		displayFolder: Minigráficos
+		lineageTag: b307804b-5021-70ee-5c9d-08ae1240b384
+
+	measure 'Spark margen' =
+			VAR v = CALCULATE ( [Margen %], REMOVEFILTERS ( D_Mes ), TREATAS ( VALUES ( D_MesSpark[MesNum] ), D_Mes[MesNum] ) )
+			VAR t = ADDCOLUMNS ( ALL ( D_MesSpark[MesNum] ), "@v", CALCULATE ( [Margen %], REMOVEFILTERS ( D_Mes ), TREATAS ( { [MesNum] }, D_Mes[MesNum] ) ) )
+			VAR mx = MAXX ( t, [@v] )
+			VAR mn = MINX ( t, [@v] )
+			VAR lo = mn - ( mx - mn ) * 0.6
+			RETURN IF ( ISBLANK ( v ), BLANK (), MAX ( v - lo, ( mx - lo ) * 0.07 ) )
+		formatString: 0.0%
+		displayFolder: Minigráficos
+		lineageTag: f8bca004-fa81-5314-3a5a-0aded6c12573
+
+	measure 'Spark conversión' =
+			VAR v = CALCULATE ( [Conversión tienda], REMOVEFILTERS ( D_Mes ), TREATAS ( VALUES ( D_MesSpark[MesNum] ), D_Mes[MesNum] ) )
+			VAR t = ADDCOLUMNS ( ALL ( D_MesSpark[MesNum] ), "@v", CALCULATE ( [Conversión tienda], REMOVEFILTERS ( D_Mes ), TREATAS ( { [MesNum] }, D_Mes[MesNum] ) ) )
+			VAR mx = MAXX ( t, [@v] )
+			VAR mn = MINX ( t, [@v] )
+			VAR lo = mn - ( mx - mn ) * 0.6
+			RETURN IF ( ISBLANK ( v ), BLANK (), MAX ( v - lo, ( mx - lo ) * 0.07 ) )
+		formatString: 0.0%
+		displayFolder: Minigráficos
+		lineageTag: 772f4f89-83e6-712e-6b8d-bfceb335bfc6
+
+	measure 'Valor árbol' = SWITCH ( SELECTEDVALUE ( D_ArbolMedida[Orden], 1 ), 1, [Ventas], 2, [Crecimiento], 3, [Margen k€] )
+		formatString: #,0
+		displayFolder: Árbol
+		lineageTag: 765587fe-72d1-647b-f9f6-ec5fd6454983
+
+	measure 'Sell-through celda' =
+			VAR s = [Sell-through]
+			RETURN IF ( ISBLANK ( s ), BLANK (), IF ( s < 0.55, "▼ ", "" ) & FORMAT ( s, "0%" ) )
+		displayFolder: Producto
+		lineageTag: 4628595e-09f2-58bb-978c-dc5f0ee8f856
+
+	measure 'Color sell-through' = IF ( [Sell-through] < 0.55, "#FF8A3D", "#F2F0EA" )
+		displayFolder: Producto
+		lineageTag: fcca600c-00af-2a78-3432-4cce24900018
+
+	measure 'Color var' = IF ( [Var Ventas %] >= 0, "#7FD8A0", "#FF8A3D" )
+		displayFolder: Producto
+		lineageTag: 31801398-f992-bca3-f4a4-44fc9c914722
+
+	measure 'PC Margen' =
+			VAR dm = [Margen %] - [Margen % Ant]
+			VAR g = [Var Ventas %]
+			VAR perd = -dm * [Ventas]
+			RETURN IF ( dm < -0.002,
+			    IF ( g >= 0,
+			        "▼ Vendes un " & FORMAT ( g * 100, "0.0" ) & " % más, pero el margen baja " & FORMAT ( -dm * 100, "0.0" ) & " pt. Esa bajada cuesta " & FORMAT ( perd, "#,0" ) & " k€ y no se ve en la cifra de ventas.",
+			        "▼ Las ventas bajan un " & FORMAT ( -g * 100, "0.0" ) & " % y el margen cae " & FORMAT ( -dm * 100, "0.0" ) & " pt: pierdes por volumen y por margen a la vez." ),
+			    "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 88e507fc-0d1f-699a-8a8a-8318956cea9d
+
+	measure 'PC Meses bajo objetivo' =
+			VAR t = ADDCOLUMNS ( FILTER ( VALUES ( D_Mes[MesNum] ), [Ventas] < [Objetivo] ), "@n", LOOKUPVALUE ( D_Mes[Mes], D_Mes[MesNum], D_Mes[MesNum] ), "@o", D_Mes[MesNum] )
+			VAR n = COUNTROWS ( t )
+			VAR k = COUNTROWS ( VALUES ( D_Mes[MesNum] ) )
+			VAR lst = CONCATENATEX ( t, [@n], ", ", [@o], ASC )
+			VAR ult = MAXX ( TOPN ( 1, t, [@o], DESC ), [@n] )
+			RETURN IF ( n > 0, "▼ No llegas al objetivo en " & n & " de " & k & " meses (" & IF ( n > 1, SUBSTITUTE ( lst, ", " & ult, " y " & ult ), lst ) & "). El total puede salir bien y esconder esos meses.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: a37d6bd7-b41e-0613-c8de-97f6a8638456
+
+	measure 'PC Concentración' =
+			VAR t = ADDCOLUMNS ( ALL ( D_Territorio[Comunidad] ), "@n", D_Territorio[Comunidad], "@o", VAR c = D_Territorio[Comunidad] RETURN CALCULATE ( [Ventas], REMOVEFILTERS ( D_Territorio ), D_Territorio[Comunidad] = c ) )
+			VAR top3 = TOPN ( 3, t, [@o], DESC )
+			VAR cuota = DIVIDE ( SUMX ( top3, [@o] ), SUMX ( t, [@o] ) )
+			VAR lst = CONCATENATEX ( top3, [@n], ", ", [@o], DESC )
+			VAR ult = MAXX ( TOPN ( 1, top3, [@o], ASC ), [@n] )
+			RETURN IF ( cuota >= 0.4, "▼ " & IF ( 3 > 1, SUBSTITUTE ( lst, ", " & ult, " y " & ult ), lst ) & " concentran el " & FORMAT ( cuota * 100, "0.0" ) & " % de las ventas. Una incidencia en una de ellas mueve todo el resultado.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 355d60c0-80f9-de36-559e-43fc4c373e9c
+
+	measure 'PC Comunidad rezagada' =
+			VAR t = ADDCOLUMNS ( ALL ( D_Territorio[Comunidad] ),
+			    "@n", D_Territorio[Comunidad],
+			    "@v", VAR c = D_Territorio[Comunidad] RETURN CALCULATE ( [Ventas], REMOVEFILTERS ( D_Territorio ), D_Territorio[Comunidad] = c ),
+			    "@p", VAR c = D_Territorio[Comunidad] RETURN CALCULATE ( [Ventas Ant], REMOVEFILTERS ( D_Territorio ), D_Territorio[Comunidad] = c ) )
+			VAR ga = DIVIDE ( SUMX ( t, [@v] ), SUMX ( t, [@p] ) )
+			VAR t2 = ADDCOLUMNS ( FILTER ( t, [@p] > 0 ), "@gap", [@p] * ga - [@v], "@g", DIVIDE ( [@v], [@p] ) - 1, "@r", RANKX ( t, [@v], , DESC, Dense ) )
+			VAR peor = TOPN ( 1, t2, [@gap], DESC )
+			VAR gap = MAXX ( peor, [@gap] )
+			RETURN IF ( gap >= 3, "▼ " & MAXX ( peor, [@n] ) & ", " & MAXX ( peor, [@r] ) & ".ª comunidad por ventas, crece un " & FORMAT ( MAXX ( peor, [@g] ) * 100, "0.0" ) & " % frente al " & FORMAT ( ( ga - 1 ) * 100, "0.0" ) & " % del total. Si creciera como la media, serían " & FORMAT ( gap, "#,0" ) & " k€ más.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: fa316fdd-b29f-63c0-6613-4ba8722009d2
+
+	measure 'PC Concentración artículos' =
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[Articulo] ), "@n", D_Articulo[Articulo], "@o", [Ventas] )
+			VAR n = COUNTROWS ( t )
+			VAR top3 = TOPN ( 3, t, [@o], DESC )
+			VAR cuota = DIVIDE ( SUMX ( top3, [@o] ), SUMX ( t, [@o] ) )
+			VAR lst = CONCATENATEX ( top3, [@n], ", ", [@o], DESC )
+			VAR ult = MAXX ( TOPN ( 1, top3, [@o], ASC ), [@n] )
+			RETURN IF ( n >= 4 && cuota >= 0.4, "▼ " & IF ( 3 > 1, SUBSTITUTE ( lst, ", " & ult, " y " & ult ), lst ) & " suman el " & FORMAT ( cuota * 100, "0.0" ) & " % de las ventas: si falla uno, se nota en todo.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 574782b3-572c-d1a0-a437-545383def547
+
+	measure 'PC Margen artículo' =
+			VAR med = [Margen %]
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[Articulo] ), "@n", D_Articulo[Articulo], "@v", [Ventas], "@m", [Margen %] )
+			VAR tv = SUMX ( t, [@v] )
+			VAR c = FILTER ( t, DIVIDE ( [@v], tv ) >= 0.08 && ( med - [@m] ) >= 0.05 )
+			VAR p = TOPN ( 1, c, ( med - [@m] ) * [@v], DESC )
+			RETURN IF ( COUNTROWS ( p ) > 0, "▼ " & MAXX ( p, [@n] ) & ": el " & FORMAT ( DIVIDE ( MAXX ( p, [@v] ), tv ) * 100, "0.0" ) & " % de las ventas con un margen del " & FORMAT ( MAXX ( p, [@m] ) * 100, "0" ) & " %, " & FORMAT ( ( med - MAXX ( p, [@m] ) ) * 100, "0.0" ) & " pt por debajo de la media. Vende mucho y deja poco.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 21c0b665-5047-bf34-93c0-550f4869df18
+
+	measure 'PC Artículo en caída' =
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[Articulo] ), "@n", D_Articulo[Articulo], "@v", [Ventas], "@p", [Ventas Ant] )
+			VAR tv = SUMX ( t, [@v] )
+			VAR c = FILTER ( t, DIVIDE ( [@v], tv ) >= 0.08 && [@p] > 0 && [@v] < [@p] * 0.98 )
+			VAR pk = TOPN ( 1, c, [@p] - [@v], DESC )
+			RETURN IF ( COUNTROWS ( pk ) > 0, "▼ En " & MAXX ( pk, [@n] ) & ", de los grandes, las ventas caen un " & FORMAT ( ( 1 - DIVIDE ( MAXX ( pk, [@v] ), MAXX ( pk, [@p] ) ) ) * 100, "0.0" ) & " % frente al ejercicio anterior" & IF ( [Ventas] > [Ventas Ant], " mientras el total crece", "" ) & ".", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 9a3b95bf-39da-b415-f599-adebc210799b
+
+	measure 'PC Sell-through' =
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[Articulo] ), "@n", D_Articulo[Articulo], "@v", [Ventas], "@st", [Sell-through] )
+			VAR r = ADDCOLUMNS ( t, "@r", RANKX ( t, [@v], , DESC, Dense ) )
+			VAR c = FILTER ( r, [@r] <= 5 && [@st] < 0.6 )
+			VAR pk = TOPN ( 1, c, ( 1 / [@st] - 1 ) * [@v], DESC )
+			RETURN IF ( COUNTROWS ( pk ) > 0, "▼ En " & MAXX ( pk, [@n] ) & " (nº " & MAXX ( pk, [@r] ) & " en ventas) solo se vende el " & FORMAT ( MAXX ( pk, [@st] ) * 100, "0" ) & " % de lo que recibes: capital parado en almacén.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 20529aae-cdbd-57fb-0d8a-48005e764f1d
+
+	measure 'PC Stock parado' =
+			VAR m = [Mes de la foto de stock]
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[ArticuloId] ), "@id", D_Articulo[ArticuloId], "@n", LOOKUPVALUE ( D_Articulo[Articulo], D_Articulo[ArticuloId], D_Articulo[ArticuloId] ), "@d", CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ), "@c", CALCULATE ( [Coste art-mes], D_Mes[MesNum] = m ) )
+			VAR l = FILTER ( t, [@d] >= 90 )
+			VAR n = COUNTROWS ( l )
+			VAR val = SUMX ( l, [@d] * [@c] / 30 )
+			VAR lst = CONCATENATEX ( l, [@n], ", ", [@id], ASC )
+			VAR ult = MAXX ( TOPN ( 1, l, [@id], DESC ), [@n] )
+			RETURN IF ( n > 0, "▼ " & n & IF ( n = 1, " artículo supera", " artículos superan" ) & " los 90 días de cobertura (" & IF ( n > 1, SUBSTITUTE ( lst, ", " & ult, " y " & ult ), lst ) & "): inmovilizan " & FORMAT ( val, "#,0" ) & " k€.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: ba28aae9-70c1-0784-bf20-fc0d3d5760d7
+
+	measure 'PC Riesgo rotura' =
+			VAR m = [Mes de la foto de stock]
+			VAR t = ADDCOLUMNS ( VALUES ( D_Articulo[Articulo] ), "@n", D_Articulo[Articulo], "@d", CALCULATE ( MAX ( F_Cobertura[Dias] ), D_Mes[MesNum] = m ), "@v", CALCULATE ( SUM ( F_Ventas[Ventas] ), REMOVEFILTERS ( D_Mes ), D_Mes[MesNum] = m, REMOVEFILTERS ( D_Linea ), REMOVEFILTERS ( D_Territorio ) ) )
+			VAR top5 = TOPN ( 5, t, [@v], DESC )
+			VAR r = FILTER ( top5, [@d] <= 30 )
+			VAR n = COUNTROWS ( r )
+			VAR imp = SUMX ( r, [@v] ) * 0.5
+			VAR lst = CONCATENATEX ( r, [@n], ", ", [@v], DESC )
+			VAR ult = MAXX ( TOPN ( 1, r, [@v], ASC ), [@n] )
+			RETURN IF ( n > 0, "▼ Entre los 5 artículos más vendidos del mes, con 30 días de cobertura o menos: " & IF ( n > 1, SUBSTITUTE ( lst, ", " & ult, " y " & ult ), lst ) & ". Dos semanas sin stock cuestan ~" & FORMAT ( imp, "#,0" ) & " k€.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 08eb048a-08c8-2693-ddf2-69d32e7c4e2b
+
+	measure 'PC Canal agotados' =
+			VAR t = ADDCOLUMNS ( VALUES ( D_Linea[Linea] ), "@n", D_Linea[Linea], "@id", CALCULATE ( MAX ( D_Linea[LineaId] ) ), "@p", [Rotura %] )
+			VAR media = [Rotura %]
+			VAR w = TOPN ( 1, t, ROUND ( [@p], 4 ), DESC, [@id], ASC )
+			RETURN IF ( COUNTROWS ( t ) > 1 && MAXX ( w, [@p] ) - media >= 0.008, "▼ " & MAXX ( w, [@n] ) & " tiene el " & FORMAT ( MAXX ( w, [@p] ) * 100, "0.0" ) & " % de sus posiciones agotadas, frente al " & FORMAT ( media * 100, "0.0" ) & " % del total: es donde más ventas se escapan.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 06c82e08-60b2-88a7-5994-0d5cd9f31759
+
+	measure 'PC Mezcla canales' =
+			VAR t = ADDCOLUMNS ( ALL ( D_Linea[Linea] ), "@n", D_Linea[Linea],
+			    "@v", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Ventas], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ),
+			    "@p", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Ventas Ant], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ),
+			    "@m", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Margen %], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ) )
+			VAR T0 = SUMX ( t, [@v] )
+			VAR TP = SUMX ( t, [@p] )
+			VAR eff = SUMX ( t, ( DIVIDE ( [@v], T0 ) - DIVIDE ( [@p], TP ) ) * [@m] * 100 )
+			VAR vo = MAXX ( FILTER ( t, [@n] = "Online" ), [@v] )
+			VAR vt = MAXX ( FILTER ( t, [@n] = "Tienda física" ), [@v] )
+			VAR po = MAXX ( FILTER ( t, [@n] = "Online" ), [@p] )
+			VAR mo = MAXX ( FILTER ( t, [@n] = "Online" ), [@m] )
+			VAR mt = MAXX ( FILTER ( t, [@n] = "Tienda física" ), [@m] )
+			RETURN IF ( T0 > 0 && TP > 0 && eff < -0.1 && vo > 0 && vt > 0, "▼ Online pasa del " & FORMAT ( DIVIDE ( po, TP ) * 100, "0.0" ) & " % al " & FORMAT ( DIVIDE ( vo, T0 ) * 100, "0.0" ) & " % de las ventas y su margen es el " & FORMAT ( mo * 100, "0.0" ) & " %, frente al " & FORMAT ( mt * 100, "0.0" ) & " % de tienda. Solo por la mezcla, el margen total se mueve " & SUBSTITUTE ( FORMAT ( eff, "+0.00;-0.00" ), "-", "−" ) & " pt.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: dea0a392-8d90-09f4-3576-92901377f4b0
+
+	measure 'PC Concentración canal' =
+			VAR t = ADDCOLUMNS ( ALL ( D_Linea[Linea] ), "@n", D_Linea[Linea],
+			    "@v", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Ventas], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ),
+			    "@p", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Ventas Ant], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ),
+			    "@m", VAR l = D_Linea[Linea] RETURN CALCULATE ( [Margen %], REMOVEFILTERS ( D_Linea ), D_Linea[Linea] = l ) )
+			VAR T0 = SUMX ( t, [@v] )
+			VAR mx = TOPN ( 1, t, [@v], DESC )
+			VAR sh = DIVIDE ( MAXX ( mx, [@v] ), T0 )
+			RETURN IF ( T0 > 0 && sh >= 0.5, "▼ " & MAXX ( mx, [@n] ) & " concentra el " & FORMAT ( sh * 100, "0.0" ) & " % de las ventas: un problema en ese canal es un problema de toda la empresa.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: 6bf14de6-7089-d9d4-2635-f1c61bf7a876
+
+	measure 'PC Embudo' =
+			VAR r = MIN ( MIN ( 0.578, 0.173 ), 0.27 )
+			VAR g = [Ventas online] * 0.01 / r
+			RETURN IF ( [Compras online] > 0, "▼ Se pierde el " & FORMAT ( ( 1 - r ) * 100, "0" ) & " % de los clientes entre la ficha de producto y el carrito. Cada punto de conversión que recuperes ahí son ~" & FORMAT ( g, "#,0" ) & " k€ de ventas online.", "" )
+		displayFolder: Puntos ciegos
+		lineageTag: ae934cde-d4d8-d5cf-cca7-f88ee4dc93b4
+
+	measure Meta = 1
+		formatString: 0%
+		displayFolder: Ventas
+		lineageTag: 77a4ec98-af1f-988d-5d74-2bde68b7f9c4
+
+	column Dummy
+		dataType: string
+		isHidden
+		lineageTag: eee0e46b-ccad-f742-9212-4b716bd050ae
+		summarizeBy: none
+		sourceColumn: Dummy
+
+	partition M_Medidas = m
+		mode: import
+		source =
+				let
+				    Origen = #table(type table [Dummy = text], {})
+				in
+				    Origen
+
+	annotation PBI_ResultType = Table
+

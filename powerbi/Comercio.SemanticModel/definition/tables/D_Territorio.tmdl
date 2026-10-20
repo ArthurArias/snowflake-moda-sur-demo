@@ -1,0 +1,85 @@
+table D_Territorio
+	lineageTag: d6b5ce81-0c04-11c0-0492-9f360756a0b2
+
+	column TerritorioId
+		dataType: int64
+		lineageTag: b2a392a2-5289-89a8-5754-14f87430564e
+		summarizeBy: none
+		sourceColumn: TerritorioId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Comunidad
+		dataType: string
+		lineageTag: 90818a30-74d7-f306-18a6-69611d6a51bb
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Comunidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoINE
+		dataType: string
+		lineageTag: 24b9a7b5-eb65-225b-963e-1a579a838c03
+		summarizeBy: none
+		sourceColumn: CodigoINE
+
+		annotation SummarizationSetBy = Automatic
+
+	column Zona
+		dataType: string
+		lineageTag: d9579156-d6ed-fa49-e1e8-3c3948a14b67
+		summarizeBy: none
+		sourceColumn: Zona
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreMapa
+		dataType: string
+		lineageTag: 9770118c-dd65-8b43-0299-af3dc5b30624
+		summarizeBy: none
+		sourceColumn: NombreMapa
+
+		annotation SummarizationSetBy = Automatic
+
+	column XMapa
+		dataType: double
+		lineageTag: d63ccfaa-2c59-438a-6715-2d1876ee16f8
+		summarizeBy: none
+		sourceColumn: XMapa
+
+		annotation SummarizationSetBy = Automatic
+
+	column YMapa
+		dataType: double
+		lineageTag: dc2d7c3a-4b16-1b89-5807-6485d1e0512c
+		summarizeBy: none
+		sourceColumn: YMapa
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Zona › Comunidad'
+		lineageTag: 69310f5e-04f5-c7d8-5fee-5580fb152170
+
+		level Zona
+			lineageTag: 73576934-4443-e9ea-77b5-4237dcbb2382
+			column: Zona
+
+		level Comunidad
+			lineageTag: d486794a-81e5-3ec1-b046-99e93df500af
+			column: Comunidad
+
+	partition D_Territorio = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_TERRITORIO", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"TerritorioId", Int64.Type}, {"Comunidad", type text}, {"CodigoINE", type text}, {"Zona", type text}, {"NombreMapa", type text}, {"XMapa", type number}, {"YMapa", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,34 @@
+table D_Embudo
+	lineageTag: af2b7499-1bc6-a7b1-b15d-49c9558d0de7
+
+	column Orden
+		dataType: int64
+		lineageTag: 8026029a-487c-4b0c-c604-7826167bcc9b
+		summarizeBy: none
+		sourceColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Paso
+		dataType: string
+		lineageTag: b77a53f0-97a1-e622-6d33-8e02fde60e6e
+		summarizeBy: none
+		sourceColumn: Paso
+		sortByColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_Embudo = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_EMBUDO", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"Orden", Int64.Type}, {"Paso", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

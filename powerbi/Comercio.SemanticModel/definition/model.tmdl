@@ -1,0 +1,29 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["D_Mes","D_Linea","D_Articulo","D_Territorio","F_Ventas","F_Stock","F_Cobertura","D_Embudo","D_Puente","D_MesSpark","D_ArbolMedida","M_Medidas"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table D_Mes
+ref table D_Linea
+ref table D_Articulo
+ref table D_Territorio
+ref table F_Ventas
+ref table F_Stock
+ref table F_Cobertura
+ref table D_Embudo
+ref table D_Puente
+ref table D_MesSpark
+ref table D_ArbolMedida
+ref table M_Medidas
+
+ref cultureInfo es-ES
+

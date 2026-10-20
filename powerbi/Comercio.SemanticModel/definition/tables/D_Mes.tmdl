@@ -1,0 +1,53 @@
+table D_Mes
+	lineageTag: fcbf50b5-d300-928c-8b71-5303e784a19e
+
+	column MesNum
+		dataType: int64
+		lineageTag: dbe949bf-a5fd-dafb-7566-d1535abca0f6
+		summarizeBy: none
+		sourceColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 5515fcda-74d1-9eee-4c08-ae3a9a6f9d6e
+		summarizeBy: none
+		sourceColumn: Mes
+		sortByColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: eeddd131-38eb-1339-14b1-e4db57d5eaae
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Trimestre › Mes'
+		lineageTag: 0be92914-6b0f-54e4-dddb-b84d84518e0d
+
+		level Trimestre
+			lineageTag: 034d57ff-1ed0-97b2-e7ef-8cdc9f61829a
+			column: Trimestre
+
+		level Mes
+			lineageTag: 63d6229b-fc81-7c48-07c1-9e8485b1a5ba
+			column: Mes
+
+	partition D_Mes = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_MES", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"MesNum", Int64.Type}, {"Mes", type text}, {"Trimestre", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

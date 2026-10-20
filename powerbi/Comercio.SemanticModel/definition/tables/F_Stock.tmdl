@@ -1,0 +1,68 @@
+table F_Stock
+	lineageTag: 326c1e30-b5d7-a724-d28a-a8c15cfe05f7
+
+	column MesNum
+		dataType: int64
+		isHidden
+		lineageTag: 73ec382f-c7a4-ac18-68ce-f1a412dfe118
+		summarizeBy: none
+		sourceColumn: MesNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column LineaId
+		dataType: int64
+		isHidden
+		lineageTag: 03d5b5dc-e675-af04-bc74-607214d5acd9
+		summarizeBy: none
+		sourceColumn: LineaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArticuloId
+		dataType: int64
+		isHidden
+		lineageTag: f863aad4-4559-2f58-03f0-c2e0cfd97b44
+		summarizeBy: none
+		sourceColumn: ArticuloId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Posiciones
+		dataType: double
+		lineageTag: 92862f9f-6a11-65ee-00cf-e6996671e12b
+		summarizeBy: sum
+		sourceColumn: Posiciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column PosicionesBajas
+		dataType: double
+		lineageTag: daf6b4dc-e51e-2af6-703d-89553b97ee82
+		summarizeBy: sum
+		sourceColumn: PosicionesBajas
+
+		annotation SummarizationSetBy = Automatic
+
+	column PosicionesAgotadas
+		dataType: double
+		lineageTag: 7dbcee97-d654-6086-9ceb-82d2cc91efcb
+		summarizeBy: sum
+		sourceColumn: PosicionesAgotadas
+
+		annotation SummarizationSetBy = Automatic
+
+	partition F_Stock = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "F_STOCK", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"MesNum", Int64.Type}, {"LineaId", Int64.Type}, {"ArticuloId", Int64.Type}, {"Posiciones", type number}, {"PosicionesBajas", type number}, {"PosicionesAgotadas", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

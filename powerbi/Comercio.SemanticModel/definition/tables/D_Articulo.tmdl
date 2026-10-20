@@ -1,0 +1,61 @@
+table D_Articulo
+	lineageTag: f9822da1-c1d8-f60b-f030-2e53ea50a3f8
+
+	column ArticuloId
+		dataType: int64
+		lineageTag: fa1631d2-287b-225a-9b98-bf2923f87ab8
+		summarizeBy: none
+		sourceColumn: ArticuloId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Articulo
+		dataType: string
+		lineageTag: abc61a3a-96d7-4f0d-27a4-e3ad1627532b
+		summarizeBy: none
+		sourceColumn: Articulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Familia
+		dataType: string
+		lineageTag: 8d062e77-cb2c-749d-78db-c99c1b0718c8
+		summarizeBy: none
+		sourceColumn: Familia
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrecioMedio
+		dataType: double
+		formatString: #,0.00 "€"
+		lineageTag: 511c44d3-ba64-37ab-971a-a5d43c0fc2ad
+		summarizeBy: none
+		sourceColumn: PrecioMedio
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Familia › Artículo'
+		lineageTag: db061cbd-b78b-19c6-2a06-4ce60da91d8e
+
+		level Familia
+			lineageTag: 8165cfa5-c0f0-eba2-6ae2-5659d512d380
+			column: Familia
+
+		level Articulo
+			lineageTag: 8064a304-5379-062d-e8ea-d325493a3d10
+			column: Articulo
+
+	partition D_Articulo = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("TU_CUENTA.snowflakecomputing.com", "DEMO_VIDEO_WH", [Role = "ACCOUNTADMIN"]),
+				    BD = Origen{[Name = "DEMO_VIDEO", Kind = "Database"]}[Data],
+				    Esquema = BD{[Name = "MODELO", Kind = "Schema"]}[Data],
+				    Encabezados = Esquema{[Name = "D_ARTICULO", Kind = "View"]}[Data],
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"ArticuloId", Int64.Type}, {"Articulo", type text}, {"Familia", type text}, {"PrecioMedio", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

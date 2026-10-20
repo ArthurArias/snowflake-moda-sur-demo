@@ -1,0 +1,34 @@
+table D_ArbolMedida
+	lineageTag: 7ac7f7bb-7a68-acb6-9bf5-45efe54a7a3a
+
+	column Orden
+		dataType: int64
+		lineageTag: 82b30ebf-9a1b-6aec-2515-8693a6e040bd
+		summarizeBy: none
+		sourceColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Opcion
+		dataType: string
+		lineageTag: 24103ff9-9334-a94e-7547-92146f34c663
+		summarizeBy: none
+		sourceColumn: Opcion
+		sortByColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_ArbolMedida = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(Binary.Decompress(Binary.FromText(Text.Combine({
+				        "8y9KSc3T8S9IzszP4zLUCUvNK0ks5jLScS5KTc7MzUzNK8lXKCtWSM1KLUrOTM7MV0jMK0ktyswv4jLW8U0sSk/NU0jNU8h+1LSGCwA="
+				    }), BinaryEncoding.Base64), Compression.Deflate), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"Orden", Int64.Type}, {"Opcion", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+
